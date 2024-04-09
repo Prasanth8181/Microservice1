@@ -21,6 +21,7 @@ public class EmployeeController
 	@GetMapping("/employees/{id}")
 	public ResponseEntity<EmployeeResponse> getEmployeeDetails(@PathVariable("id")int empId)
 	{
+		System.out.println("Inside the controller class");
 	    EmployeeResponse employeeResponse=employeeService.getEmployeeById(empId);
 	    return ResponseEntity.status(HttpStatus.OK).body(employeeResponse);
 	}

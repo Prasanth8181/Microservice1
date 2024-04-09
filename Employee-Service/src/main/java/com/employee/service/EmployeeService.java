@@ -10,7 +10,7 @@ import com.employee.response.EmployeeResponse;
 @Service
 public class EmployeeService 
 {
-	@Autowired(required = true)
+	@Autowired()
 	private EmployeeRepository employeeRepository;
 	@Autowired
 	private ModelMapper modelMapper;
