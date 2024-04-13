@@ -6,7 +6,14 @@ public class EmployeeResponse
 	private String empName;
 	private String empEmail;
 	private String empBgroup;
+	private EmpAddressResponse empAddressResponse;
 	
+	public EmpAddressResponse getEmpAddressResponse() {
+		return empAddressResponse;
+	}
+	public void setEmpAddressResponse(EmpAddressResponse empAddressResponse) {
+		this.empAddressResponse = empAddressResponse;
+	}
 	public int getEmpId() {
 		return empId;
 	}
