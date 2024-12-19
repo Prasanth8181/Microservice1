@@ -1,0 +1,59 @@
+#include"TCHeader.h"
+//#include<iostream>
+//#include<tc/tc_startup.h>
+//#include<tcinit/tcinit.h>
+//#include<tc/emh.h>
+ 
+using namespace std;
+ 
+#define PRINT_HELP \
+{ \
+cout<< "\n"; \
+cout << "usage: Utility used to login Teamcenter following arguments: \n" << endl; \
+cout << "\t\t -u = [user name] Name of the Teamcenter user \n" << endl; \
+cout << "\t\t -p = [password] Password of the Teamcenter user \n" << endl; \
+cout << "\t\t -g = [group name] group of the Teamcenter user \n" << endl; \
+}
+ 
+void help()
+{
+	if ((ITK_ask_cli_argument("-h") != NULL))
+	{
+		cout << "Inside the help function";
+		PRINT_HELP
+			exit(0);
+	}
+}
+ 
+int login()
+{
+	help();
+	int iFail = 0;
+	char *message = NULL;
+ 
+	char*user_id = ITK_ask_cli_argument("-u=");
+	char*password = ITK_ask_cli_argument("-p=");
+	char*group = ITK_ask_cli_argument("-g=");
+ 
+	char* help = ITK_ask_cli_argument("-h");
+ 
+ 
+	iFail = ITK_init_module(user_id, password, group);
+ 
+	//iFail = ITK_init_module("infodba", "infodba" , "dba");//
+ 
+	//iFail = ITK_auto_login();
+ 
+	if (iFail == ITK_ok)
+	{
+		cout << "Login sucessfully \n";
+	}
+	else
+	{
+		EMH_ask_error_text(iFail, &message);
+		cout << message;
+	}
+	return 0;
+ 
+	
+}
