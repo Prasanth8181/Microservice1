@@ -26,9 +26,6 @@ EPM-set-task-result-to-property----->
 EPM-check-target-attachments----------> checks the target object whether the any other attachment is attached or not.
 
 
-
- 
-
 HANDLER TO SPECIFIC TASK:
 
 
@@ -40,20 +37,20 @@ Placement-->Except perform place on any action
 -value-Test Or Value= ,, <--If we have given the ,, then non empty values should be considered
 -attachment -target
 
-
 EPM-assert-targets-checked-in(RULE HANDLER) -->  Validates wheather the target object is checked in or not
 No placement
 
 EPM-validate-target-objects(RULE HANDLER) --> Validates wheather the target object is which type we are selecting (eg: we are selecting the item revision or part revision) other than we are initiating the work flow to the other objects as the target it will throw the error.
 -include_type = ItemRevision
-
 -latest_rev---------------------->to check latest revision
 Place on any action in any task
+
 EPM-check-target-object(RULE HANDLER) --> Checks the status of the target object then only it will initiate the work flow(eg: if its already have workflow of tcm released then our workflow will be initiated).
  -allowed_status=Pending
 -placement = Perform
  -disallowed_status=tcm_released
 *Workflow initiate only when the status of the object is pending
+
 EPM-check-target-attachments (RULE HANDLER)---------->checks the target object whether the any other attachment is attached or not.(Eg: If PDF is attached to the target or nor, if not it will throw error).
 -include_type=target-object
 -include_related_type= PDF
@@ -65,6 +62,7 @@ Specification                                     IMAN_specification
 Requirement                                    IMAN_requirement
 Reference                                          IMAN_reference
 BOM view attachement                 PSBOMViewRevision
+
 EPM-check-signoff-comments --> Reviewrs need to perform sign off comments when they perform operation otherwise it will throw the error.
 placement -- perform
 This handler should be attached in the perform sign-off task
@@ -73,22 +71,24 @@ EPM-set-property(ACTION HANDLER)-->This handler is mainly used to set the proper
 EPM-set-property cannot recognize run-time or compound properties. 
 (the date type supports the $CURRENT_DATE keyword, which dynamically obtains the current
 date)
- 
 -property --Property name real name should be entered
 -value -- new value should be entered
 -to_attach -- object target should be specified(TARGET)
 -bypass
 placement : Start or Complete
+
 EPM-change-ownership -->  Which is used to change the ownership of the target object
 placement:- No specific placement
 -assignee       $REVIEWERS
 This example, when placed on the Complete action of the select-signoff-team subtask of a Review task, changes the ownership of all the target objects to reviewers and their groups
+
 EPM-remove-objects--> Removes the specified target or reference objects from the workflow process
 -remove_targets  ->used to remove the target objects
 -keep_targets  -> Used to keep the target objects 
 -remove_refs -> used to remove the references
 -keep_refs  -> Used to keep those references
 Placement ----> START OR COMPLETE
+
 EPM-change-group-owner --> Changes the owning group for the item master of any item type whose revision is attached as target
 * ITEM MASTER FORM owing group owenr will be changed
 -group          engineering
@@ -100,14 +100,16 @@ placement-start
 -property -> that property related objects will be attached in attachment folder(Optional)
 -include_related_type=Text
 -exclude_related_type=object-type1[,object-type2,...]] ] |
- 
 
 All the objects having the relationship of specification we attached, will be moved into the reference folder
 EPM-suspend-on-reject --> It will suspend if the decesion is rejected
+
 EPM-demote(RULE HANDLER)--> It will check the condition and demote it to the mentioned task.
 -target_task -->Task Name
+
 EPM-check-action-performer-role (RULE HANDLER) --------> checks which role and which group and which user should intiate the workflow.
 placement =Assign, Skip, or Undo
+
 EPM-create-sub-process(Action Handler) --> This action handler is mainly used to create the sub process of the main process
 The new subprocess can take on attachments of the parent process, and those attachments can be grouped by property.
 -template= We have to give the template name which we are making as sub process
@@ -116,28 +118,33 @@ The new subprocess can take on attachments of the parent process, and those atta
 -include_type= ItemRevision
 -exclude_type
 placement :  Start or Complete 
+
 EPM-notify(Action handler)--> This action handler will notify the user about the task status
 The EPM-notify handler can send notifications to users through Teamcenter mail and OS mail only if the Mail_internal_mail_activated preference is set to True.
 -subject     --> Need to add the subject
 -recipient  --> $PROCESS_OWNER $RESPONSIBLE_PARTY, $RESOURCE_POOL_NONE,$REVIEWERS
 -attachment --> target, process
 -comment --> Please review new subassembly and report any concerns directly to the Product Manager
+
 TCRS-delete-dataset(Action handler)-->This handler is used to delete the dataset attached to the item revision.
 -dataset_type=Text
 -relation=IMAN_reference
 -reference=Text
 placement : start or complete
+
 EPM-require-authentication(Action handler)--> This handler will set the password for the authentication and required user should enter the password then only it will proceed further
 placement : perform
 * we have to place on the below tasks only
 • Do task
 • perform-signoffs task
 • Condition task
+
 PROJ-assign-member(ACTION HANDLER)-->This action handler is used to assign the members to the project using the handler
 PLACEMENT:-start
--projects:                                  WF_TEST(Project ID)
--members:                               Author/Approver/kumar
+-projects:                     WF_TEST(Project ID)
+-members:                      Author/Approver/kumar
 -privileged_members:           dba/DBA/infodba
+
 EPM-suspend-on-reject(ACTION HANDLER)-->This action handler is used to suspend the wf when the user reject the task.
 PLACEMENT:-Perform
 *This has to be placed on the  perform-signoffs task.
@@ -145,6 +152,7 @@ Utilities:
 D:\TC_13\TC_ROOT\bin>release_man.exe -u=infodba -p=infodba -g=dba -status=Pending -folder=foldername
 release_man-->This is the utility to initate workflow for the many items at a time
 Preferences:
+
 EPM_enable_apply_template_changes--->This preference is used to update the changes of process template to the already initiate process template
 The changes we done for the template will be automatically reflected incase if we intitate the same template on any object.
 EPM_enable_apply_template_changes-->AUTOMATIC
