@@ -1,0 +1,111 @@
+package datasetHandler;
+
+import javax.management.RuntimeErrorException;
+
+import org.eclipse.core.commands.AbstractHandler;
+import org.eclipse.core.commands.ExecutionEvent;
+import org.eclipse.core.commands.ExecutionException;
+import org.eclipse.ui.IWorkbenchWindow;
+import org.eclipse.ui.handlers.HandlerUtil;
+import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.IStructuredSelection;
+
+import com.teamcenter.rac.kernel.TCSession;
+import com.teamcenter.rac.kernel.TCComponent;
+import com.teamcenter.rac.kernel.TCComponentDataset;
+import com.teamcenter.rac.kernel.TCComponentDatasetType;
+import com.teamcenter.rac.kernel.TCComponentFolder;
+import com.teamcenter.rac.kernel.TCComponentItem;
+import com.teamcenter.rac.kernel.TCComponentItemRevision;
+import com.teamcenter.rac.kernel.TCComponentItemType;
+import com.teamcenter.rac.kernel.TCComponentUser;
+import com.teamcenter.rac.kernel.TCException;
+import com.teamcenter.rac.aif.kernel.AIFComponentContext;
+import com.teamcenter.rac.aif.common.AIFTree;
+import com.teamcenter.rac.aifrcp.AIFUtility;
+import com.teamcenter.rac.common.TCTree;
+
+public class DatasetCreation extends AbstractHandler {
+	
+	@Override
+	public Object execute(ExecutionEvent event) throws ExecutionException
+	{
+		System.out.println("Entered to Dataset Creation Handler");
+		System.err.println("Entry in the DatasetCreation");
+		TCSession tcsession = (TCSession) AIFUtility.getCurrentApplication().getSession();
+		TCComponentUser tcuser = tcsession.getUser();
+
+		try {
+			String datasetName = "MyDataset";
+			String datasetType = "PDF";
+			String description = "This is a sample dataset";
+			TCComponentDataset newObj = null;
+			
+			
+			String username = tcuser.getUserName();
+			System.err.println("Current User: " + username);
+			// TCComponentItemType itemObj = (TCComponentItemType)
+			// tcsession.getTypeComponent("Dataset");
+
+			TCComponentDatasetType dataset=(TCComponentDatasetType) tcsession.getTypeComponent("PDF");
+
+			System.err.println("Entry before");
+//				 newObj = dataset.create(datasetName, datasetType, description);
+			newObj = dataset.create(datasetName, description, datasetType);
+			System.err.println("Entry after" + newObj.getClassType());
+			System.err.println("Entry after" + newObj.getType());
+
+			newObj.save();
+			newObj.lock();
+			//TCComponentItemType itemType = (TCComponentItemType) tcsession.getTypeComponent("Item");
+			//System.out.println(itemType==null?"ITEMTYPE IS NULL":"ITEM TYPE NOT NULL");
+			//TCComponentItem itemobj=itemType.find("item_id");
+			//System.out.println(itemType==null?"ITEM OBJ IS NULL":"ITEM OBJ TYPE NOT NULL");
+			//TCComponentItemRevision itemRev= itemobj.getLatestItemRevision();
+			//System.out.println(itemType==null?"ITEM REV IS NULL":"ITEM REV TYPE NOT NULL");
+			//itemRev.add("IMAN_specification", newObj);
+			//itemRev.save();
+			//System.out.println("Dataset attached to the item revision");
+			//TCComponentFolder homeFolder = tcuser.getHomeFolder();
+			//.add("contents", newObj);
+			//homeFolder.save();
+			// Get the selected object
+            IWorkbenchWindow window = HandlerUtil.getActiveWorkbenchWindowChecked(event);
+            ISelection selection = window.getSelectionService().getSelection();
+            if (selection instanceof IStructuredSelection)
+            {
+            	 Object selectedElement = ((IStructuredSelection) selection).getFirstElement();
+            	 System.err.println("Selected element class: " + selectedElement.getClass().getName());
+            	 if (selectedElement instanceof AIFComponentContext) 
+            	 {
+            		 AIFComponentContext context = (AIFComponentContext) selectedElement;
+            		 TCComponent component = (TCComponent) context.getComponent();
+            		 if (component instanceof TCComponentItemRevision) 
+            		 {
+                     TCComponentItemRevision itemRevision = (TCComponentItemRevision) component;
+            		 itemRevision.add("IMAN_specification", newObj);
+            		 itemRevision.save();
+         			 System.out.println("Dataset attached to the item revision");
+            	     }
+            	     else
+            	     {
+            		 System.out.println("Selected object is not item rev");
+            	     }
+                 }
+                    else
+       	            {
+       		         System.out.println("No Item is selected");
+       	            }
+            }
+            
+		} 
+           catch (TCException e) 
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return tcsession;
+	}
+
+}
