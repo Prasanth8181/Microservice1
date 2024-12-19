@@ -1,0 +1,43 @@
+#include "TC_DLL.h"
+extern "C"
+{
+	extern DLLAPI int ITK_TC_DLL_register_callbacks();
+	extern DLLAPI int action_execute_callback(int *decisison, va_list argv);
+	extern DLLAPI int udpateIMRF(int *decisison, va_list argv);
+	extern DLLAPI int ITK_TC_DLL_register_callbacks()
+	{
+		CUSTOM_register_exit("ITK_TC_DLL", "USER_init_module",CUSTOM_EXIT_ftn_t(action_execute_callback));
+		cout << "ITK-Action SaveAs Registered successfully..." << endl;
+		return ITK_ok;
+	}
+	extern DLLAPI int action_execute_callback(int *decisison, va_list argv)
+	{
+		*decisison = ALL_CUSTOMIZATIONS;
+		METHOD_id_t mMethodId;
+		METHOD_find_method("ItemRevision","ITEM_create_from_rev",&mMethodId);
+		METHOD_add_action(mMethodId, METHOD_post_action_type, (METHOD_function_t)udpateIMRF, NULL);
+		cout << "\n Welcome to DLL execute process \n" << endl;
+		return ITK_ok;
+	}
+	extern DLLAPI int udpateIMRF(int *decisison, va_list argv)
+	{
+		cout << "\n Entry into the udpateIMRF\n" << endl;
+		tag_t tPrimaryObj;
+		tPrimaryObj=va_arg(argv, tag_t);
+		tag_t tRelationType = NULLTAG;
+		tag_t *tSecondaryObject = NULLTAG;
+	
+		int iSecCount = 0;
+		GRM_find_relation_type("IMAN_master_form_rev", &tRelationType);
+		GRM_list_secondary_objects_only(tPrimaryObj,tRelationType,&iSecCount,&tSecondaryObject);
+		for (int i = 0; i < iSecCount; i++)
+		{
+			AOM_refresh(tSecondaryObject[i], true);
+			AOM_set_value_string(tSecondaryObject[i], "object_desc", "UPDATED--From ITK POST Action");
+			AOM_save_without_extensions(tSecondaryObject[i]);
+			AOM_refresh(tSecondaryObject[i], false);
+		}
+		cout << "7\n" << endl;
+		return ITK_ok;
+	}
+}
