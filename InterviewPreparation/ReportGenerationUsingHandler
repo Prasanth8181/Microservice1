@@ -1,0 +1,244 @@
+#include "TC_DLL.h"
+#include <fstream>
+#include<string>
+#define Arguments 2
+#define IZ_IncludeType "includeType"
+#define IZ_Prefernce "preference"
+
+int ifail = ITK_ok;
+int iArguments = 2;
+void check(int ifail)
+{
+	char* cError = NULL;
+	if (ifail != ITK_ok)
+	{
+		EMH_ask_error_text(ifail,&cError);
+		cout << "__Error__" << cError<<endl;
+		TC_write_syslog("__Error__ %s\n", cError);
+		exit(0);
+	}
+}
+void nullCheck(tag_t tag)
+{
+	char* cError = NULL;
+	FILE* p = NULL;
+	if (tag == NULL || tag == NULLTAG)
+	{
+		EMH_ask_error_text(ifail, &cError);
+		cout << "__Null Check Error__" << cError << endl;
+		TC_write_syslog("The null check error is : %s \n", cError);
+	}
+}
+ofstream MyFile("cPrefFileLoc");//Need to check this
+extern "C"
+{
+	extern DLLAPI int ITK_TC_DLL_register_callbacks();
+	extern DLLAPI int functionToInitiate(int* decision, va_list args);
+	extern DLLAPI int checkReport(EPM_action_message_t* msg);
+	extern DLLAPI void SubChild(tag_t tChildLines);
+
+	int iLevel = 0;
+	char* cItemId = NULL;
+	char* cChildRevId = NULL;
+	char* cQuantity = NULL;
+	char * cUomTag = NULL;
+
+	fstream fout;
+
+	extern DLLAPI int ITK_TC_DLL_register_callbacks()
+	{
+		int iStatus = ITK_ok;
+		iStatus=CUSTOM_register_exit("ITK_TC_DLL","USER_init_module", (CUSTOM_EXIT_ftn_t)functionToInitiate);
+		TC_write_syslog("Callback function is registered check report");
+		return iStatus;
+	}
+	extern DLLAPI int functionToInitiate(int* decision, va_list args)
+	{
+		*decision = ALL_CUSTOMIZATIONS;
+		cout << "Welcome to Intelizign services" << endl;
+		TC_write_syslog("\n BOM report login function entered");
+		check(EPM_register_action_handler("Custom-check-report-generation", "Create BOM Report using handler", (EPM_action_handler_t)checkReport));
+		TC_write_syslog("\n BOM report login function end!!!!");
+		return ifail;
+	}
+	extern DLLAPI int checkReport(EPM_action_message_t* msg)
+	{
+		char* cArgumentName = NULL;
+		char* cArgumentValue = NULL;
+		char* cPrefvalue = NULL;
+		char* cIncludeType = (char*)MEM_alloc(100);
+		char* cPreference = (char*)MEM_alloc(100);
+		tag_t tRootTask = NULLTAG;
+		int iAttachmentCount = 0;
+		tag_t* tAttachments = NULL;
+		int* iAttachementType = 0;
+		tag_t tClassId = NULLTAG;
+		char* cClassName = NULL;
+		int iBomViewCount = 0;
+		tag_t* bomViewRevisions = NULL;
+		tag_t tWindow = NULLTAG;
+		tag_t* tBvrs = NULL;
+		tag_t tTopBomLine = NULLTAG;
+		int iChildLinesCount = 0;
+		tag_t* tChildLines = NULL;
+
+
+		TC_write_syslog("\n BOM report Action Handler function entered\n");
+		cout << "BOM report Action Handler function entered" << endl;
+		int iNoOfArguments=TC_number_of_arguments(msg->arguments);
+		TC_write_syslog("\n BOM report No of arguments found %d \n", iNoOfArguments);
+		cout << "BOM report No of arguments found\n" << endl;
+		if (iNoOfArguments == Arguments)
+		{
+			for (int i = 0; i < iNoOfArguments; i++)
+			{
+				ITK_ask_argument_named_value(TC_next_argument(msg->arguments), &cArgumentName,&cArgumentValue);
+				if (tc_strcmp(cArgumentName,IZ_IncludeType)==0)
+				{
+					tc_strcpy(cIncludeType, cArgumentValue);
+					TC_write_syslog("Include Type found %s\n", cIncludeType);
+					cout << "Include Type found " << cIncludeType << endl;
+				}
+				if (tc_strcmp(cArgumentName, IZ_Prefernce))
+				{
+					tc_strcpy(cPreference, cArgumentValue);
+					TC_write_syslog("Include Type found %s\n", cPreference);
+					cout << "prefernce value found " << cPreference << endl;
+				}
+			}
+
+		}
+		//getting the file location from a preference
+		check(PREF_ask_char_value(cPreference,0,&cPrefvalue));
+		TC_write_syslog("File location found %s \n", cPrefvalue);
+		cout << "File location found" << cPrefvalue << endl;
+		fout.open(cPrefvalue);
+		if (!fout.is_open())
+		{
+			TC_write_syslog("Failed to open file: %s\n", cPrefvalue);
+			cout << "Failed to open the file" << endl;
+			EMH_store_error(EMH_severity_error, Error8);
+			return Error8;
+		}
+		check(EPM_ask_root_task(msg->task, &tRootTask));
+		if (tRootTask == NULLTAG)
+		{
+			TC_write_syslog("tRootTask is NULLTAG\n");
+			cout << "Root task is NULLTAG"<<endl;
+			EMH_store_error_s1(EMH_severity_error, Error9, "root task tag is NULLTAG");
+			return Error9;
+		}
+		else
+		{
+			TC_write_syslog("Root task found\n");
+			cout << "Root task is found"<<endl;
+		}
+		EPM_ask_all_attachments(tRootTask, &iAttachmentCount,&tAttachments, &iAttachementType);
+		if (tAttachments == NULL)
+		{
+			TC_write_syslog("tAttachments is NULLTAG\n");
+			EMH_store_error_s1(EMH_severity_error, Error9,"Attachments tag is NULLTAG");
+			cout << "Attachments tag is NULLTAG" << endl;
+			return Error9;
+		}
+		if (iAttachmentCount != ITK_ok)
+		{
+			for (int i = 0; i < iAttachmentCount; i++)
+			{
+				check(POM_class_of_instance(tAttachments[i], &tClassId));
+				check(POM_name_of_class(tClassId, &cClassName));
+				if (tc_strcmp(cClassName, cIncludeType) == 0)
+				{
+					check(ITEM_rev_list_all_bom_view_revs(tAttachments[i],&iBomViewCount, &tBvrs));
+					if (iBomViewCount != 0)
+					{
+						check(BOM_create_window(&tWindow));
+						check(BOM_set_window_top_line_bvr(tWindow, tBvrs[0],&tTopBomLine));
+						if (tTopBomLine != NULLTAG)
+						{
+							check(BOM_line_ask_all_child_lines(tTopBomLine, &iChildLinesCount,&tChildLines));
+							cout << "The no of the child lines found[" << iChildLinesCount << "]" << endl;
+							TC_write_syslog("The no of the child lines found[%d]\n",iChildLinesCount);
+							if (iChildLinesCount > 0 && tChildLines!=NULL)
+							{
+								// Check if fout is in a good state before writing
+								if (fout.good())
+								{
+									fout << "Level" << "," << "ITEM_Id" << "," << "Rev_Id" << "," << "Quantity" << "," << "UOM" << "\n";
+								}
+								else
+								{
+									cout<< "File stream is not in a good state" <<endl;
+									TC_write_syslog("File stream is not in a good state\n");
+									EMH_store_error_s1(EMH_severity_error, Error9, "File stream is not in a good state");
+									return Error9;
+								}
+								for (int i = 0; i < iChildLinesCount; i++)
+								{
+									check(AOM_ask_value_int(tChildLines[i], "bl_level_starting_0", &iLevel));
+									check(AOM_ask_value_string(tChildLines[i], "bl_item_item_id", &cItemId));
+									check(AOM_ask_value_string(tChildLines[i], "bl_rev_item_revision_id", &cChildRevId));
+									check(AOM_ask_value_string(tChildLines[i], "bl_quantity", &cQuantity));
+									check(AOM_ask_value_string(tChildLines[i], "bl_item_uom_tag", &cUomTag));
+
+									fout << to_string(iLevel) << ", " << cItemId << "," << cChildRevId << "," << cQuantity << "," << cUomTag << "\n";
+
+									SubChild(tChildLines[i]);
+								}
+							}
+							else
+							{
+								cout << "The no child lines found"<< endl;
+								TC_write_syslog("The no child lines found\n", iChildLinesCount);
+							}
+						}
+						else
+						{
+							TC_write_syslog("tTopBomLine is NULLTAG\n");
+							cout << "tTopBomLine is NULLTAG" << endl;
+						}
+					}
+					else
+					{
+						TC_write_syslog("Bom View count is 0\n");
+						cout << "Bom View count is 0" << endl;
+					}
+				}
+				else
+				{
+					TC_write_syslog("Include type and business object are not same\n");
+					cout << "Include type and business object are not same" << endl;
+					EMH_store_error_s1(EMH_severity_error, Error9, "Include type and business object are not same");
+					return Error9;
+				}
+			}
+		}
+		else
+		{
+			TC_write_syslog("Attachments are not found\n");
+			EMH_store_error_s1(EMH_severity_error, Error9, "Attachments are not found");
+			cout << "Attachments are not found" << endl;
+			return Error9;
+		}
+
+	}
+	DLLAPI void SubChild(tag_t tChildLines)
+	{
+		char* msg = NULL;
+		tag_t* subchild1 = NULL;
+		int count1 = 0;
+
+		check(BOM_line_ask_all_child_lines(tChildLines, &count1, &subchild1));
+		for (int j = 0; j < count1; j++)
+		{
+			check(AOM_ask_value_int(subchild1[j], "bl_level_starting_0", &iLevel));
+			check(AOM_ask_value_string(subchild1[j], "bl_item_item_id", &cItemId));
+			check(AOM_ask_value_string(subchild1[j], "bl_rev_item_revision_id", &cChildRevId));
+			check(AOM_ask_value_string(subchild1[j], "bl_quantity", &cQuantity));
+			check(AOM_ask_value_string(subchild1[j], "bl_item_uom_tag", &cUomTag));
+			fout << to_string(iLevel) << ", " << cItemId << "," << cChildRevId << "," << cQuantity << "," << cUomTag << "\n";
+			SubChild(subchild1[j]);
+		}
+
+	}
+}
