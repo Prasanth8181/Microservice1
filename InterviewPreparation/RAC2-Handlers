@@ -1,0 +1,86 @@
+package com.iz.teamcenter.rac.customize.customcreation.handlers;
+
+import org.eclipse.core.commands.AbstractHandler;
+import org.eclipse.core.commands.ExecutionEvent;
+import org.eclipse.core.commands.ExecutionException;
+import org.eclipse.ui.IWorkbenchWindow;
+import org.eclipse.ui.handlers.HandlerUtil;
+
+import com.iz.teamcenter.rac.customize.customcreation.designDev.PopupDialog;
+import com.teamcenter.rac.aifrcp.AIFUtility;
+import com.teamcenter.rac.kernel.TCComponent;
+import com.teamcenter.rac.kernel.TCComponentFolder;
+import com.teamcenter.rac.kernel.TCComponentItem;
+import com.teamcenter.rac.kernel.TCComponentItemType;
+import com.teamcenter.rac.kernel.TCComponentUser;
+import com.teamcenter.rac.kernel.TCException;
+import com.teamcenter.rac.kernel.TCSession;
+
+import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.swt.widgets.Shell;
+
+public class SampleHandler extends AbstractHandler 
+{
+	public static final String revId="A";
+
+	@Override
+	public Object execute(ExecutionEvent event) throws ExecutionException 
+	{
+		IWorkbenchWindow window = HandlerUtil.getActiveWorkbenchWindowChecked(event);
+		
+		TCSession tcsession = (TCSession) AIFUtility.getCurrentApplication().getSession();
+		TCComponentUser tcuser = tcsession.getUser();
+		
+		Shell shell=new Shell();
+		PopupDialog popupDialog=new PopupDialog(shell);
+		String itemName = null;
+		String itemID=null;
+		String itemType=null;
+		String type=null;
+		String itemDesc=null;
+	
+		try {
+			if(popupDialog.open()==0)
+			{
+				System.out.println("After create");
+				itemName=popupDialog.getProperty1();
+				itemID=popupDialog.getProperty2();
+				if(itemID.isEmpty())
+				{
+					System.out.println("Inside item id null");
+				}
+				type = popupDialog.getItemType();
+				if(type.equals("Client Item"))
+				{
+					itemType="A4ClientItem";
+				}
+				if(type.equals("Ship Item"))
+				{
+					itemType="A4ShipItem";
+				}
+				itemDesc=popupDialog.getProperty3();
+				System.out.println("Item Name: " + itemName);
+				System.out.println("Item Id: " + itemID);
+				window.getShell();
+				/*MessageDialog.openInformation(window.getShell(), "Dialogue", "Name : "+popupDialog.getProperty1()+"\n"+"Id : "+
+				popupDialog.getProperty2()+"\n"+"Description : "+popupDialog.getProperty3()+"\n"+"comments : "+popupDialog.getProperty4());*/
+				//MessageDialog.openConfirm(shell, "Are you sure to confirm", "The value of the Property2 is"+property2);
+			}
+			String username = tcuser.getUserName();
+			System.out.println("Current User: "+username);
+			TCComponentItemType itemObj = (TCComponentItemType) tcsession.getTypeComponent("Item");
+			TCComponent tcComponent = null;
+			TCComponentItem newObj = itemObj.create(itemID, revId,itemType, itemName, itemDesc,tcComponent);
+			//newObj.save();
+			newObj.lock();
+			TCComponentFolder homeFolder = tcuser.getHomeFolder();
+			homeFolder.add("contents", newObj);
+			//homeFolder.save();
+
+		} catch (TCException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return tcsession;
+	}
+}
