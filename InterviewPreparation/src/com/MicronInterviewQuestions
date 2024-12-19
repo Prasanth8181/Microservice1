@@ -1,0 +1,136 @@
+								
+1	How to Register DLL?							
+2	Which preferencr to be updated for DLL Regsitration?							
+3	How to Debug DLL?							
+4	How to export a single preference to add into Git?							
+5	Workflow Scenarios:							
+	a	A set of item revisions are selected, item rev have an attribute field named color, I want to add the BLUE values item revision to worklow, How to do it? Which Handler can help?						
+	b	How to assign signoff performers?						
+	c	How to allow a particular object type to initiate a workflow?						
+	d	How to hadle error in workflow? For failure case it should go to other path, how to achieve it? Validate Task						
+6	BMIDE Scenarios:							
+	a	We have Factories (item Rev). Factories have an attribute valued as "Active/In Active". I want to list out the Active Factories in a property on Engineering Item rev. User should be able to click the Factory Object. (Dynamic LOV, Property with TypedReference)						
+	b	How to create Dynamic LOV						
+	c	Clicks to create Item Revision in BMIDE						
+	d	I want to prevent object creation of an under-development Item Rev and workflow initiation from Business User, but our Developers should be able to create objects and initiate workflows, How to achieve it? (Display Rule on Business Object, Filter Condition on Workflow template)						
+	e	Revising from one revision to another, I want to carry forward a property value. How to achieve it? CopyFromOriginal Property constant						
+	f	Need to show custom property on BOM Line. How to add it?						
+7	ITK							
+	a	How to handle errors and exceptions in ITK with C++?						
+	b	Give me the steps and APIs for printing ALL Childrens of BOM for an Item Having BVR						
+	c	What is advantage and disadvantage of Using POM level APIs.						
+	d	What is difference between POM level AOM level APIs						
+	e	How to set configuration Rule in ITK						
+	f	How to Handler errors?						
+	g	How to handle error msgs in Workflow						
+	h	A custom handler is placed somewhere, when it executes, teamcenter hangs. What could be the possible issue?						
+	i	Why use AOM_save_without_extension?						
+	j	What is the difference between AOM_save and AOM_save_without_extension?						
+	k	ITK steps to register Custom Handler						
+	l	How to get the runtime property value in ITK? Which API to use to ask runtime property value						
+8	What is your best learning approach? Best strategy to learn about project, ongoing requirements?							
+9	How you will learn about the implemented solutions and functionality if there is no documentation?							
+								
+								
+								
+								
+								
+Introduction								
+1. Asked about Teamcenter Experience in Brief								
+								
+ITK BAISC : -								
+1.How to Register the DLL'S and steps to configure the vs code  								
+2.Steps to configure VS code for utility.								
+3. What Preference required to set the vs code avalibility for change.								
+								
+UTILITY : -								
+1. Utility scenerio : Suppose we are updating one property on custom object and at the same time we trying to edit it from RAC will you be able to edit/modify it ?								
+								
+2. BOM Utility scenerio : Suppose take an Item with revisions A and add the product structure with sub childs what process and api will you be using to complete it.								
+								
+3. List Down all the BOM api's while creation								
+								
+4. How will you Handle Errors in the code?								
+								
+Custom Action Handler(ITK): 								
+								
+1. Explain about the requirement what you worked on Action Handler 								
+								
+2. What steps will you do to make your handler visible in workflow 								
+								
+3. What apis you used to accompalish your requirement.								
+								
+4. How to add multiple users from file also what if we need to remove specific role from the group								
+								
+BMIDE								
+1. Scenerio : - If you want to hide the custom object from role and keep the same object avalible/visible to other people in Organnization what will you do?								
+								
+2. Scenerio : If i want the revision to be automatically revise after creation of item what should i do?								
+								
+3. Steps what you do for adding a service for Custom Soa and process to make it avalible to use on command 								
+								
+AWC								
+1. What is the use of DCP and explain the traversal methods in DCP 								
+2. what utility is you use for column configuration?and explain how did you worked with it ?								
+3. What requirement you worked on Awc customization ? Explain 								
+								
+WORKFLOW								
+								
+1. Scenerio : - If you want to set the status what handler you use ? and can you be able to set the new with same handler ? 								
+2. List all the Handler(OOTB) you worked.								
+3. Explain how will you add the multiple users in the reviwer task?								
+								
+								
+								
+								
+								
+BMIDE								
+1.What is the difference b/w Persistent property and Compound Property								
+2.What is the use of Naming rules and if we are trying to create Item with Invalid pattren, is it allow?								
+3. Scenerio : - If we login with Eng group 20 props should visiable instead of 40 and if we login with project adminstration group some other properties hsould get visiable								
+4.Property Extensions in BMIDE								
+5.What's the use of Deep copy rules and What are the actions we have when we do revise								
+								
+UTILITY : -								
+1.How to create Bulk Item creation using file and if we are trying to create Item with Invalid pattren, is it allow? how to handle?								
+								
+								
+WORKFLOW								
+1.How to configure Late Notification								
+2. What are the handler we will use for Late Notification								
+								
+TEAMCENTER:-								
+1.What is the protection scope in preference?								
+2.What is the difference between user and site protection scope								
+								
+								
+What is Primary Business object in BMIDE ?								
+Where should we keep rule handlers to do validations of Do task ?								
+How to send workflow to background processing ?								
+What are the ways to extract BOM from Teamcenter ?								
+What are filter rules in PLMXML Administrator ?								
+Did you work on AWC customization ?								
+How do you prepare a plan to deliver the work ?								
+Did work with business to gather requirements to deliver the work ?								
+If Business is asking a requirement not present in TcUA how do you convince ?								
+What are Deep Copy rules ?								
+What are Display rules ?								
+What is the difference b/w Batch LOV and Dynamic LOV?								
+								
+								
+What is Complex Property?								
+How to create a Dyanamic LOV?								
+How to create Cascading LOV?								
+How to Create Compound Property?								
+What is difference b/w Batch LOV and Dynamic LOV?								
+How to create conditions for a specific scenario in BMIDE?								
+How to develop a rule handler in ITK and register?								
+How to register a dll in ITK (preference name)?								
+How to debug a handler?								
+How to create a tile and register an Icon for that tile?								
+what is tile collection?								
+How to set stylesheet for specific role/group?								
+What is syntax for preference to set styelsheet in AWC?								
+								
+								
+								
