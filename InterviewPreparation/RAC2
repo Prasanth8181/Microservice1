@@ -1,0 +1,289 @@
+package com.iz.teamcenter.rac.customize.customcreation.designDev;
+
+import java.awt.Checkbox;
+
+import org.eclipse.jface.dialogs.Dialog;
+import org.eclipse.jface.dialogs.TitleAreaDialog;
+import org.eclipse.swt.SWT;
+import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Combo;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Group;
+import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Layout;
+import org.eclipse.swt.widgets.List;
+import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.widgets.Text;
+import org.eclipse.jface.dialogs.IDialogConstants;
+import org.eclipse.swt.widgets.ToolBar;
+import org.eclipse.swt.widgets.ToolItem;
+import org.eclipse.swt.layout.*;
+
+public class PopupDialog extends Dialog
+{
+	private Text txtProperty1;
+    private Text txtProperty2;
+    private Text txtProperty3;
+    private Text txtProperty4;
+    private Text txtProperty5;
+    private Text txtProperty6;
+    private Text txtProperty7;
+    private Text txtProperty8;
+    
+    private String property1;
+    private String property2;
+    private String property3;
+    private String property4;
+    private String property5;
+    private String property6;
+    private String property7;
+    private String property8;
+    
+    private String comboBoxValue;
+    private Combo comboBox;
+    private Composite page1;
+    private Composite page2;
+
+ 
+    private Button checkBox;
+    private boolean checkBoxValue;
+ 
+    public PopupDialog(Shell parentShell) {
+        super(parentShell);
+    }
+    @Override
+    protected void configureShell(Shell newShell) {
+        super.configureShell(newShell);
+        newShell.setText("Custom Item");
+        newShell.setSize(600, 600);
+        newShell.setMinimumSize(10, 20);
+        // Add a button to toggle visibility
+        Button toggleButton = new Button(newShell, SWT.TOGGLE);
+        toggleButton.setText("Hide Properties");
+        //newShell.setStyle(SWT.RESIZE | SWT.DIALOG_TRIM);
+    }
+    @Override
+    protected Control createDialogArea(Composite parent)
+    {
+    	Composite container = (Composite) super.createDialogArea(parent);
+       // container.setLayout(new GridLayout(2, false));
+        page1 = new Composite(container, SWT.NONE);
+        page1.setLayout(new GridLayout(2, true));
+        createPage1(page1);
+ 
+        page2 = new Composite(container, SWT.NONE);
+        page2.setLayout(new GridLayout(2, true));
+        createPage2(page2);
+        page2.setVisible(false);
+ 
+        return container;
+    }
+    private void createPage1(Composite parent)
+    {
+    	//adding the text headline
+    	Label lblPropertyHeader2 = new Label(parent, SWT.NONE);
+    	lblPropertyHeader2.setText("Object Create Information");
+     	GridData gridData2 = new GridData(SWT.FILL, SWT.CENTER, true, false);
+     	gridData2.horizontalSpan = 2; 
+     	lblPropertyHeader2.setLayoutData(gridData2);
+     	 //adding second headline
+     	Label lblPropertyheader = new Label(parent, SWT.NONE);
+    	lblPropertyheader.setText("  Define business object create information");
+    	GridData gridData1 = new GridData(SWT.FILL, SWT.LEFT, true, false);
+    	gridData1.horizontalSpan = 2; 
+        lblPropertyheader.setLayoutData(gridData1);
+        // Add a separator (underline)
+        Label separator1 = new Label(parent, SWT.SEPARATOR | SWT.HORIZONTAL);
+        GridData separatorGridData1 = new GridData(SWT.FILL, SWT.CENTER, true, false);
+        separatorGridData1.horizontalSpan = 2; // Span across 2 columns
+        separator1.setLayoutData(separatorGridData1);
+ 
+    	//Name property
+    	Label lblProperty1 = new Label(parent, SWT.NONE);
+        lblProperty1.setText("* Item Name:");
+        GridData lblProperty1Data = new GridData(SWT.LEFT, SWT.CENTER, false, false);
+        //lblProperty1Data.horizontalIndent = 20; // Add left padding
+        //lblProperty1Data.verticalIndent=10;
+        lblProperty1.setLayoutData(lblProperty1Data);
+
+ 
+        txtProperty1 = new Text(parent, SWT.BORDER);
+        txtProperty1.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
+ 
+        Label lblProperty2 = new Label(parent, SWT.NONE);
+        lblProperty2.setText("  Item Id:");
+        txtProperty2 = new Text(parent, SWT.BORDER);
+        txtProperty2.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
+        
+        
+        Label lblProperty3 = new Label(parent, SWT.NONE);
+        lblProperty3.setText("  Description:");
+        //txtProperty3 = new Text(container, SWT.BORDER);
+        txtProperty3 = new Text(parent, SWT.BORDER);
+        txtProperty3.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
+        
+        
+        Label lblProperty4 = new Label(parent, SWT.NONE);
+        lblProperty4.setText("  Comments:");
+        txtProperty4 = new Text(parent, SWT.BORDER);
+        txtProperty4.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
+        
+        //Drop down to select custom item
+        Label comboBoxLabel = new Label(parent, SWT.NONE);
+        comboBoxLabel.setText("* Custom Item Type:");
+        comboBox = new Combo(parent, SWT.DROP_DOWN | SWT.READ_ONLY);
+        comboBox.setItems(new String[] {"Client Item", "Ship Item"});
+        comboBox.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+        
+        //validate details checkbox
+        Label checkBoxLabel = new Label(parent, SWT.NONE);
+        checkBoxLabel.setText("* Validate info");
+        checkBox = new Button(parent, SWT.CHECK);
+        checkBox.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, true, false, 1, 1));
+
+    }
+    private void createPage2(Composite parent) 
+    {
+    	/*Label lblProperty5 = new Label(parent, SWT.NONE);
+        lblProperty5.setText("Project Id:");
+        txtProperty5 = new Text(parent, SWT.BORDER);
+        txtProperty5.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
+        //Button backButton=createButton(parent, 112, "Assign", true);
+        
+        Label lblProperty6 = new Label(parent, SWT.NONE);
+        lblProperty6.setText("User Data1:");
+        txtProperty6 = new Text(parent, SWT.BORDER);
+        txtProperty6.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
+        
+        Label lblProperty7 = new Label(parent, SWT.NONE);
+        lblProperty7.setText("User Data2:");
+        txtProperty7 = new Text(parent, SWT.BORDER);
+        txtProperty7.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
+        
+        Label lblProperty8 = new Label(parent, SWT.NONE);
+        lblProperty8.setText("User Data3:");
+        txtProperty8 = new Text(parent, SWT.BORDER);
+        txtProperty8.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));*/
+    	Label lblProperty5 = new Label(parent, SWT.NONE);
+        lblProperty5.setText("NEXT PAGE:");
+        txtProperty5 = new Text(parent, SWT.BORDER);
+        txtProperty5.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
+        Button backButton=createButton(parent, 112, "Assign", true);
+        
+    }
+    @Override
+    protected void createButtonsForButtonBar(Composite parent) 
+    {
+    	//Button backButton=createButton(parent, "9999", "CREATE", true);//custom ID and Custom name
+    	Button backButton=createButton(parent, IDialogConstants.BACK_ID, IDialogConstants.BACK_LABEL, true);
+    	Button nextButton=createButton(parent, IDialogConstants.NEXT_ID, IDialogConstants.NEXT_LABEL, true);
+    	Button finishButton=createButton(parent, IDialogConstants.FINISH_ID, IDialogConstants.FINISH_LABEL, true);//This is the custom button
+        Button cancelButton=createButton(parent, IDialogConstants.CANCEL_ID, IDialogConstants.CANCEL_LABEL, false);//existing button
+    }
+    @Override
+    protected void buttonPressed(int buttonId)
+    {
+    	 System.err.println("Button Id["+buttonId+"]");
+    	 if (buttonId == IDialogConstants.NEXT_ID) {
+             page1.setVisible(false);
+             page2.setVisible(true);
+         } else if (buttonId == IDialogConstants.BACK_ID) {
+             page2.setVisible(false);
+             page1.setVisible(true);
+         } else if (buttonId == IDialogConstants.FINISH_ID)
+         {
+             property1 = txtProperty1.getText();//mandatory
+             property2 = txtProperty2.getText();
+             property3 = txtProperty3.getText();
+             property4 = txtProperty4.getText();
+             checkBoxValue = checkBox.getSelection();//mandatory
+             comboBoxValue = comboBox.getText();//mandatory
+             if (property1.isEmpty()) 
+             {
+                 MessageDialog.openError(getShell(), "Error", "Please enter item name...");
+                 return;
+             }
+             if(!checkBoxValue)
+             {
+            	 MessageDialog.openError(getShell(), "Error", "Please check the validate info...");
+                 return;
+             }
+             if(comboBoxValue.isEmpty())
+             {
+            	 MessageDialog.openError(getShell(), "Error", "Please select the item type...");
+                 return;
+             }
+             System.out.println("Item Name["+property1+"]");
+             System.out.println("comboBoxValue [" + comboBoxValue + "]");
+             System.out.println("Check box value[" + checkBoxValue + "]");
+             super.okPressed();
+         } else {
+             super.buttonPressed(buttonId);
+         }
+
+
+			/*
+			 * if (buttonId == 9999) { property1 = txtProperty1.getText(); property2 =
+			 * txtProperty2.getText(); property3 = txtProperty3.getText(); property4 =
+			 * txtProperty4.getText();
+			 * 
+			 * okPressed(); } else { super.buttonPressed(buttonId); }
+			 */
+    }
+    @Override
+    protected void okPressed() {
+        property1 = txtProperty1.getText();
+        property2 = txtProperty2.getText();
+        checkBoxValue = checkBox.getSelection();
+        comboBoxValue = comboBox.getText();
+        if (property1.isEmpty() || property2.isEmpty()) 
+        {
+            MessageDialog.openError(getShell(), "Error", "All fields must be filled out.");
+            return;
+        }
+        System.out.println("comboBoxValue ["+comboBoxValue+"]");
+        System.out.println("Check box value["+checkBoxValue+"]");
+        super.okPressed();
+    }
+    @Override
+    protected Point getInitialSize() {
+       // Set the initial size of the dialog (width, height)
+       return new Point(750, 700);
+    }
+ 
+    public String getProperty1() {
+        return property1;
+    }
+ 
+    public String getProperty2() {
+        return property2;
+    }
+    public String getProperty3() {
+        return property3;
+    }
+    public String getProperty4() {
+        return property4;
+    }	
+    public String getProperty5() {
+        return property5;
+    }
+    public String getProperty6() {
+        return property6;
+    }
+    public String getProperty7() {
+        return property7;
+    }
+    public String getProperty8() {
+        return property8;
+    }
+    public String getItemType()
+    {
+    	return comboBoxValue;
+    }
+
+}
