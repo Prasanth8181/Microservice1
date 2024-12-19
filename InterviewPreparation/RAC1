@@ -1,0 +1,208 @@
+package sample.handlers;
+import org.eclipse.jface.dialogs.Dialog;
+import org.eclipse.jface.dialogs.IDialogConstants;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Combo;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Listener;
+import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.widgets.Text;
+
+public class IP extends Dialog {
+
+	private Text txtProperty1;
+    private Text txtProperty2;
+    private Text txtProperty3;
+    private Text txtProperty4;
+    private Text txtProperty5;
+    
+    private String property1;
+    private String property2;
+    private String property3;
+    private String property4;
+    private String comboBoxValue;
+    private Combo comboBox;
+    
+    private Composite page1;
+    private Composite page2;
+    Label lblProperty1 =null;
+    Button button =null;
+    boolean isCheckoutable=false;
+    
+
+    private Button checkBox;
+    private boolean checkBoxValue;
+
+    public IP(Shell parentShell) {
+        super(parentShell);
+    }
+    
+    protected void configureShell(Shell newShell) {
+        super.configureShell(newShell);
+        newShell.setText("New Item");
+        newShell.setSize(500, 400);
+        newShell.setMinimumSize(10, 20);
+        Button toggleButton = new Button(newShell, SWT.TOGGLE);
+        toggleButton.setText("Hide Properties");
+
+    }
+    
+    protected Control createDialogArea(Composite parent)
+    {
+    	Composite container = (Composite) super.createDialogArea(parent);
+        page1 = new Composite(container, SWT.NONE);
+        page1.setLayout(new GridLayout(2, true));
+        createPage1(page1);
+
+        return container;
+ 
+    }
+    private void createPage1(final Composite parent)
+    {
+    	System.out.println("Inside the createPage1");
+    	//adding the text headline
+    	Label lblPropertyHeader2 = new Label(parent, SWT.NONE);
+    	lblPropertyHeader2.setText("Object Create Information");
+     	GridData gridData2 = new GridData(SWT.FILL, SWT.CENTER, true, false);
+     	gridData2.horizontalSpan = 2; 
+     	lblPropertyHeader2.setLayoutData(gridData2);
+     	 //adding second headline
+     	Label lblPropertyheader = new Label(parent, SWT.NONE);
+    	lblPropertyheader.setText("  Define business object create information");
+    	GridData gridData1 = new GridData(SWT.FILL, SWT.LEFT, true, false);
+    	gridData1.horizontalSpan = 2; 
+        lblPropertyheader.setLayoutData(gridData1);
+        
+        // Add a separator (underline)
+        Label separator1 = new Label(parent, SWT.SEPARATOR | SWT.HORIZONTAL);
+        GridData separatorGridData1 = new GridData(SWT.FILL, SWT.CENTER, true, false);
+        separatorGridData1.horizontalSpan = 2; // Span across 2 columns
+        separator1.setLayoutData(separatorGridData1);
+       
+        
+        
+    	//Name property
+        if(!isCheckoutable)
+        {
+        	System.out.println("isCheckoutable--false");
+        	lblProperty1 = new Label(parent, SWT.NONE);
+            lblProperty1.setText("BEFORE CHANGE:");
+            GridData lblProperty1Data = new GridData(SWT.LEFT, SWT.CENTER, false, false);
+            lblProperty1Data.horizontalIndent = 20; // Add left padding
+            lblProperty1Data.verticalIndent=10;
+            lblProperty1.setLayoutData(lblProperty1Data);
+        }
+        else
+        {
+        	System.out.println("isCheckoutable--true");
+        	lblProperty1 = new Label(parent, SWT.NONE);
+            lblProperty1.setText("AFTER CHANGE:");
+            GridData lblProperty1Data = new GridData(SWT.LEFT, SWT.CENTER, false, false);
+            lblProperty1Data.horizontalIndent = 20; // Add left padding
+            lblProperty1Data.verticalIndent=10;
+            lblProperty1.setLayoutData(lblProperty1Data);
+        }    
+        parent.layout();
+        txtProperty1 = new Text(parent, SWT.BORDER);
+        txtProperty1.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
+
+        Label lblProperty2 = new Label(parent, SWT.NONE);
+        lblProperty2.setText("Id:");
+
+        txtProperty2 = new Text(parent, SWT.BORDER);
+        txtProperty2.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
+        
+        Label lblProperty3 = new Label(parent, SWT.NONE);
+        lblProperty3.setText("Description:");
+        
+        //txtProperty3 = new Text(container, SWT.BORDER);
+        txtProperty3 = new Text(parent, SWT.BORDER);
+        txtProperty3.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
+        
+        Label lblProperty4 = new Label(parent, SWT.NONE);
+        lblProperty4.setText("comments:");
+        
+        txtProperty4 = new Text(parent, SWT.BORDER);
+        txtProperty4.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
+        parent.layout();
+        button =new Button(parent,  SWT.PUSH | SWT.FLAT);
+        System.out.println("last step");
+        button.setText("Check Out...");
+        button.addListener(SWT.Selection, new Listener()
+        {
+			public void handleEvent(Event event)
+			{
+				System.out.println("Inside the event");
+				
+				  // Set the flag to true
+		        isCheckoutable = true;
+
+		        // Dispose of the existing components
+		     // Dispose of the existing components
+		        Control[] children = parent.getChildren();
+		        for (int i = 0; i < children.length; i++)
+		        {
+		            children[i].dispose();
+		        }
+		        // Refresh the parent composite to reflect the changes
+		        createPage1(parent);
+				parent.layout();
+			}
+		});
+      
+ 
+    	
+    }
+   
+    protected void createButtonsForButtonBar(Composite parent) 
+    {
+    	//Button backButton=createButton(parent, "9999", "CREATE", true);//custom ID and Custom name
+    	Button backButton=createButton(parent, IDialogConstants.BACK_ID, IDialogConstants.BACK_LABEL, true);
+    	Button nextButton=createButton(parent, IDialogConstants.NEXT_ID, IDialogConstants.NEXT_LABEL, true);
+    	Button finishButton=createButton(parent, IDialogConstants.FINISH_ID, IDialogConstants.FINISH_LABEL, true);//This is the custom button
+        Button cancelButton=createButton(parent, IDialogConstants.CANCEL_ID, IDialogConstants.CANCEL_LABEL, false);//existing button
+       
+    }
+    
+   /* protected void buttonPressed(int buttonId)
+    {
+    	 System.err.println("Button Id["+buttonId+"]");
+    	
+    
+         if (buttonId == IDialogConstants.BACK_ID) {
+             page1.setVisible(false);
+         } else if (buttonId == IDialogConstants.FINISH_ID)
+         {
+             property1 = txtProperty1.getText();
+             property2 = txtProperty2.getText();
+            
+         } else
+         {
+             super.buttonPressed(buttonId);
+         }
+
+    }
+*/
+ 
+    protected Point getInitialSize() {
+       // Set the initial size of the dialog (width, height)
+       return new Point(400, 400);
+    }
+    public void handleNull(String str)
+    {
+    	if(str.equals(null))
+    	{
+    		str.replaceAll(null, "");
+    	}
+    }
+
+
+
+}
