@@ -1,0 +1,138 @@
+#include "TCHeader.h"
+#include <iostream>
+#include <tcinit/tcinit.h>
+#include <bom/bom.h>
+#include <ps/ps.h>
+#include <tccore/item.h>
+#include <tccore/aom.h>
+#include <tccore/aom_prop.h>
+#include <fclasses/tc_date.h>
+#include <cfm/cfm.h>
+ 
+using namespace std;
+ 
+int ApplyingRevisionRule()
+{
+	// Initialize variables
+	tag_t tWindow = NULLTAG;
+	tag_t tItem1 = NULLTAG;
+	tag_t tRevision1 = NULLTAG;
+	tag_t tBomLine = NULLTAG;
+	tag_t tNewRule = NULLTAG;
+	tag_t tEnditem = NULLTAG;
+	int iCount = 0;
+	char* cName = NULL;
+	tag_t* tChildren = NULL;
+	logical lIsValid = FALSE;
+	date_t dStartDate;
+ 
+	// Define the start date
+	const char* startDate = "10-oct-2024 00:00:59";
+ 
+	// Convert the start date string to a date_t structure
+	DATE_string_to_date_t((char*)startDate, &lIsValid, &dStartDate);
+ 
+	// Find the item with ID "000157"
+	checkiFail(ITEM_find_item("000157", &tItem1));
+ 
+	// Check if the item tag is not NULLTAG
+	if (tItem1 != NULLTAG) {
+		// Find the item revision with ID "000157" and revision "A"
+		checkiFail(ITEM_find_rev("000157", "A", &tRevision1));
+ 
+		// Check if the item revision tag is not NULLTAG
+		if (tRevision1 != NULLTAG) {
+			// Create a BOM window
+			checkiFail(BOM_create_window(&tWindow));
+ 
+			// Check if the BOM window tag is not NULLTAG
+			if (tWindow != NULLTAG) {
+				// Save the BOM window without extensions
+				AOM_save_without_extensions(tWindow);
+ 
+				// Set the top line of the BOM window
+				checkiFail(BOM_set_window_top_line(tWindow, tItem1, tRevision1, NULLTAG, &tBomLine));
+ 
+				// Check if the BOM line tag is not NULLTAG
+				if (tBomLine != NULLTAG) {
+					// Save the BOM line without extensions
+					AOM_save_without_extensions(tBomLine);
+ 
+					// Ask for all child lines of the BOM line
+					checkiFail(BOM_line_ask_all_child_lines(tBomLine, &iCount, &tChildren));
+ 
+					// Print the number of child lines
+					cout << iCount << endl;
+ 
+					// Iterate through the child lines
+					for (int i = 0; i < iCount; i++) {
+						// Get the indented title of the child line
+						AOM_ask_value_string(tChildren[i], "bl_indented_title", &cName);
+ 
+						// Print the indented title
+						cout << cName << endl;
+ 
+						// Free the memory allocated for the child name
+						MEM_free(cName);
+					}
+ 
+					// Free the memory allocated for the child lines
+					MEM_free(tChildren);
+ 
+					// Create and set configuration rule
+					checkiFail(CFM_rule_create("RevRule", "ITK", &tNewRule));
+ 
+					// Check if the configuration rule tag is not NULLTAG
+					if (tNewRule != NULLTAG) {
+						checkiFail(CFM_rule_set_date(tNewRule, dStartDate));
+						checkiFail(ITEM_find_item("000157", &tEnditem));
+						checkiFail(CFM_rule_set_end_item(tNewRule, tEnditem));
+						AOM_save_without_extensions(tNewRule);
+						checkiFail(BOM_set_window_config_rule(tWindow, tNewRule));
+						BOM_save_window(tWindow);
+ 
+						// Ask for all child lines again
+						checkiFail(BOM_line_ask_all_child_lines(tBomLine, &iCount, &tChildren));
+ 
+						// Print the number of child lines
+						cout << iCount << endl;
+ 
+						// Iterate through the child lines again
+						for (int i = 0; i < iCount; i++) {
+							// Get the indented title of the child line
+							AOM_ask_value_string(tChildren[i], "bl_indented_title", &cName);
+ 
+							// Print the indented title
+							cout << cName << endl;
+ 
+							// Free the memory allocated for the child name
+							MEM_free(cName);
+						}
+ 
+						// Free the memory allocated for the child lines
+						MEM_free(tChildren);
+					}
+					else {
+						cout << "Error: Configuration rule not created or rule tag is NULLTAG." << endl;
+					}
+				}
+				else {
+					cout << "Error: BOM line not created or BOM line tag is NULLTAG." << endl;
+				}
+			}
+			else {
+				cout << "Error: BOM window not created or BOM window tag is NULLTAG." << endl;
+			}
+		}
+		else {
+			cout << "Error: Item revision not found or item revision tag is NULLTAG." << endl;
+		}
+	}
+	else {
+		cout << "Error: Item not found or item tag is NULLTAG." << endl;
+	}
+ 
+	return 0;
+}
+
+has context menu
