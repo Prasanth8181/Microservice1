@@ -1,0 +1,128 @@
+MY TEAMCENTER OVERVIEW
+Business object:
+Business Object which makes sense to business item, which nothing but a object of a given item.
+
+Perspective:
+Perspective is visual container for the set of parts and colletion of views & editors is called as the perspective.
+
+Editor:
+Editor is if we want to perform any change in part, object or file(dataset) then that object will be opened in a editor, with the help of it we can perform changes
+
+View:
+View is typically used to work on a set of data, which might be a hierarcal structure.
+Types of views:
+⦁	Summary view
+⦁	Details view
+⦁	Impact analysis view
+⦁	Viewer view
+⦁	Component view
+
+Component View:
+If we double click on that item that will be opened in a different tab with that child hierarchy that separate tab is called as component view.
+ 
+Summary view:
+In the summery view we can find the details related the object(item) that we have selected.
+ 
+⦁	In the overview tab we can able to find the data related to the Group ID and owner item type etc...,
+⦁	In related datasets we can add the data sets(physical files) to our item.
+⦁	Audit Logs is used for tracking the workflow,general,license export and structure logs.
+
+Details view:
+Details view will give us the details about the item and its hierarchy items present in it and aslo the relation with the items inside the assembly.
+ 
+Impact analysis view:
+This view is mainy give us the informationa about the object where used and where that object referenced.
+⦁	Where Used: It is the information about the where that item is used in the structure.
+   
+⦁	Where referenced: It gives us the information about the where that object is referenced in the structure.
+      
+Depth in the impact analysis view is used to get the levels of object used in the hierarchy, whichever the level we need we can get based on the options given
+Depth-All levels-> means from the home folder the hierarchy will be shown on the impact analysis view.
+One level-> means only parent and child relation can be shown.
+Top level-> Top level structure will be shown.
+
+Viewer view:
+It will give all information about the item and also check-in and check-out also we can perform using viewer view. 
+
+Item:
+Item is the real world entity In team center Item can have any no.of revisions.
+item creation->Select the folder where we want to create the item->File->new->Item->Next->Item name and assign id and revision.
+once the item creation is done, it will automatically generate below files
+⦁	Item
+⦁	Item master form
+⦁	revision 
+⦁	revision master form
+ 
+Item master form will contain the basic parameter like Project ID,user data etc...,
+Item revision is used to add new feature or modification to the exising item, the existing data will not be effected.
+
+JT Preview:
+JT Preview is mainly used for showing the 3d design's and which require nx feature.
+
+Process History:
+Process history means history of the work flow will be shown in the process history.
+
+Data set & Named Reference:
+Data set means the type of physical file that we are going to attach.
+Named reference means the physical file that we are going to store.
+
+Check-In & Check-Out:
+When check-out the item will be freezed for the modification/edit only it's available for modificaion we we do check-in for that item.
+Due to which we can prevent the override the modification for the same item.
+Once we click check-in that details will be updated in the database.
+
+Explicit checkout:
+we can do that check out from the view's tab
+
+Implicit checkout:
+Double click on the data set->It will be automatically check out and we need to do modification to that file then only we can call this as implicit checkout.
+
+Versions:
+when we perform check-in and check-out operation on data set then one version will be created, moreover we have to make changes in the data set otherwise versions will not be reflected.
+
+we can check the version using below procedure:
+select the data set -> File->Vew With->versions
+
+Sequences:
+when we do check-in and check-out then one sequence will be updated automatically.
+without any modification as well the sequence will be updated.
+sequence check path:-Open serch view->change search from search history dropdown-> select all sequences ->Enter item id and click enter-> and there you will find all the sequences.
+
+purge:
+purge option is used to keep the non latest option as it is, and it will delete the non latest revisions.
+select the any revision->edit->purge
+
+Immune:
+If I make any revision as immune then that revision i.e even though if its non latest then it will not be deleted while performing purge operation.
+select the revision->edit->make Immune
+
+Searches:
+There are 3 types of searches are there in team center
+1.simple search
+2.Advanced search
+3.quick search
+Simple search:
+ 
+Based on the search options that we have given that it will search and give us the object.
+
+Advanced Search:
+Based on the requiremnt we can create custom queries, based on that we can get the result.
+
+Difference between revise and saveas:
+We will be able to revise the only item revision objects not items, So we can perform saveas to the item.
+we can perform revise to item revision
+Select the item to perform save as -> assign id -> click finish-> new item will be created in the new stuff folder(because in preference we have given this file).
+WsoInsertNoSelectionsPref    ----> After performing save as to change the default storage folder
+Copy will copy the same object reference and if we do any change in one object then it reflects the other copied objects as well.
+
+PREFERENCES:
+TCDefaultKeepLimit->To change the no.of limit sequences
+AE_dataset_default_keep_limit->To  change the no.of limit versions
+TC_config_rule_name->Setting the revision rule default value
+PSEVariantsMode->To change the options and variants model legacy/modular/hybrid
+
+
+
+
+
+
